@@ -15,7 +15,6 @@ public class KafkaToFlink {
         env.enableCheckpointing(5000);      //启动检查点
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.201.82.55:9092");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
         FlinkKafkaConsumer010<String> myConsumer = new FlinkKafkaConsumer010<>(
