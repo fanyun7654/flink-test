@@ -40,8 +40,7 @@ public class KafkaToFlink {
 
         //kafka配置信息
         Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.201.82.55:9092");
+//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
         //创建flink kafka消费者，不用版本功能介绍
@@ -53,35 +52,32 @@ public class KafkaToFlink {
 
         DataStream<String> sourceStream = env.addSource(myConsumer);
         //将来源的数据转为DataStream
-//        DataStream<Tuple1<String>> stream = sourceStream.map(new JobMapFun());
-//        //注册临时表
-//        tableEnv.registerDataStream("myTable2", stream, "din");
-//        //写sql语句
-//        String sql = "SELECT din FROM myTable2";
-//        //执行sql查询
-//        Table table = tableEnv.sqlQuery(sql);
-//        //打印查看数据
-//        DataStream<Tuple2<Boolean, Row>> wcDataStream = tableEnv.toRetractStream(table, Row.class);
-//        wcDataStream.print();
-//
-//        System.out.println("++++++++++" + wcDataStream.toString());
-//
-//        //sql中的字段的类型
-//        RowTypeInfo typeInformations = new RowTypeInfo(STRING_TYPE_INFO);
-//        //将数据追加到Table中
-//        DataStream<Row> retractStream = tableEnv.toAppendStream(table, typeInformations, qConfig);
-//        //输出查询结果，value.f1就是Row
-////        desStream.print();
-//        retractStream.print();
-//        System.out.println("++++++++" + retractStream.toString());
+        DataStream<Tuple1<String>> stream = sourceStream.map(new JobMapFun());
+        //注册临时表
+        tableEnv.registerDataStream("myTable2", stream, "din");
+        //写sql语句
+        String sql = "SELECT din FROM myTable2";
+        //执行sql查询
+        Table table = tableEnv.sqlQuery(sql);
+        //打印查看数据
+        DataStream<Tuple2<Boolean, Row>> wcDataStream = tableEnv.toRetractStream(table, Row.class);
+        wcDataStream.print();
+
+        //sql中的字段的类型
+        RowTypeInfo typeInformations = new RowTypeInfo(STRING_TYPE_INFO);
+        //将数据追加到Table中
+        DataStream<Row> retractStream = tableEnv.toAppendStream(table, typeInformations, qConfig);
+        //输出查询结果，value.f1就是Row
+//        desStream.print();
+        retractStream.print();
 
         //将获取的数据直接输出
-        sourceStream.map(new MapFunction<String, String>() {
-            @Override
-            public String map(String value) throws Exception {
-                return "Stream Value ========== " + value;
-            }
-        }).print();
+//        sourceStream.map(new MapFunction<String, String>() {
+//            @Override
+//            public String map(String value) throws Exception {
+//                return "Stream Value ========== " + value;
+//            }
+//        }).print();
         env.execute("flink kafka test");
     }
 
