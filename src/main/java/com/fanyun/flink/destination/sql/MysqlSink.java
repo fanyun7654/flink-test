@@ -12,17 +12,17 @@ public class MysqlSink extends RichSinkFunction<Tuple3<String,String,String>> {
     private Connection connection;
     private PreparedStatement preparedStatement;
     String username = "root";
-    String password = "123456";
+    String password = "root123456";
     String drivername = "com.mysql.jdbc.Driver";
     String dburl = "jdbc:mysql://localhost:3306/flink_test";
 
     public void invoke(Tuple3<String, String, String> value) throws Exception {
         System.out.println("value1:"+value.f0);
-        System.out.println("value1:"+value.f1);
-        System.out.println("value1:"+value.f2);
+        System.out.println("value2:"+value.f1);
+        System.out.println("value3:"+value.f2);
         Class.forName(drivername);
         connection = DriverManager.getConnection(dburl, username, password);
-        String sql = "replace into orders(order_id,order_no,order_price) values(?,?,?)";
+        String sql = "replace into flink_test(din,device_type,device_version) values(?,?,?)";
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, value.f0);
         preparedStatement.setString(2, value.f1);

@@ -114,7 +114,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.fanyun.flink.KafkaToFlink</mainClass>
+                            <mainClass>com.fanyun.flink.destination.sql.KafkaToMysql</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

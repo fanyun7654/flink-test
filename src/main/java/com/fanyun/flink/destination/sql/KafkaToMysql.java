@@ -1,5 +1,6 @@
 package com.fanyun.flink.destination.sql;
 
+import com.fanyun.flink.KafkaToFlink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -18,8 +19,7 @@ public class KafkaToMysql {
     public static void main(String[] args) throws Exception {
         //kafka配置信息
         Properties properties = new Properties();
-//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.201.82.55:9092");
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -39,15 +39,7 @@ public class KafkaToMysql {
             public boolean filter(String value) throws Exception {
                 return StringUtils.isNotBlank(value);
             }
-        }).map(new MapFunction<String, Tuple3<String, String, String>>() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Tuple3<String, String, String> map(String value)
-                    throws Exception {
-                String[] args = value.split(":");
-                return new Tuple3<String, String, String>(args[0], args[1],args[2]);
-            }
-        });
+        }).map(new KafkaToFlink.JobMapFun());
 
         sourceStreamTra.addSink(new MysqlSink());
         env.execute("data to mysql start");

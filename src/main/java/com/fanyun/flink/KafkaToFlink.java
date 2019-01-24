@@ -2,12 +2,14 @@ package com.fanyun.flink;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fanyun.flink.destination.sql.MysqlSink;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -40,7 +42,7 @@ public class KafkaToFlink {
 
         //kafka配置信息
         Properties properties = new Properties();
-//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
         //创建flink kafka消费者，不用版本功能介绍
@@ -52,11 +54,11 @@ public class KafkaToFlink {
 
         DataStream<String> sourceStream = env.addSource(myConsumer);
         //将来源的数据转为DataStream
-        DataStream<Tuple1<String>> stream = sourceStream.map(new JobMapFun());
+        DataStream<Tuple3<String,String,String>> stream = sourceStream.map(new JobMapFun());
         //注册临时表
-        tableEnv.registerDataStream("myTable2", stream, "din");
+        tableEnv.registerDataStream("myTable2", stream, "din,type,version");
         //写sql语句
-        String sql = "SELECT din FROM myTable2";
+        String sql = "SELECT din,type,version FROM myTable2";
         //执行sql查询
         Table table = tableEnv.sqlQuery(sql);
         //打印查看数据
@@ -66,10 +68,10 @@ public class KafkaToFlink {
         //sql中的字段的类型
         RowTypeInfo typeInformations = new RowTypeInfo(STRING_TYPE_INFO);
         //将数据追加到Table中
-        DataStream<Row> retractStream = tableEnv.toAppendStream(table, typeInformations, qConfig);
+//        DataStream<Row> retractStream = tableEnv.toAppendStream(table, typeInformations, qConfig);
         //输出查询结果，value.f1就是Row
 //        desStream.print();
-        retractStream.print();
+//        retractStream.print();
 
         //将获取的数据直接输出
 //        sourceStream.map(new MapFunction<String, String>() {
@@ -81,16 +83,16 @@ public class KafkaToFlink {
         env.execute("flink kafka test");
     }
 
-    public static class JobMapFun implements MapFunction<String, Tuple1<String>> {
+    public static class JobMapFun implements MapFunction<String, Tuple3<String,String,String>> {
         @Override
-        public Tuple1<String> map(String json) {
+        public Tuple3<String,String,String> map(String json) {
             JSONObject outJson = JSON.parseObject(json);
             String din = outJson.get("din").toString();
             System.out.println("-----------Din:"+ din);
             String type = outJson.get("type").toString();
             String version = outJson.get("version").toString();
             Long timestamp = Long.parseLong(outJson.get("timestamp").toString());
-            return new Tuple1<String>(din);
+            return new Tuple3<String, String, String>(din,type,version);
         }
     }
 
