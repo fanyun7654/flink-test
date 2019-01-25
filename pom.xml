@@ -63,6 +63,13 @@
             <version>1.7.7</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -92,7 +99,7 @@
                         <!--<manifest>-->
                             <!--&lt;!&ndash; 此处指定main方法入口的class &ndash;&gt;-->
                             <!--<mainClass>com.fanyun.flink.KafkaToFlink</mainClass>-->
-                            <!--&lt;!&ndash;<mainClass>com.fanyun.flink.destination.sql.KafkaToMysql</mainClass>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<mainClass>com.fanyun.flink.destination.KafkaToMysql</mainClass>&ndash;&gt;-->
                         <!--</manifest>-->
                     <!--</archive>-->
                 <!--</configuration>-->
@@ -114,7 +121,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.fanyun.flink.destination.sql.KafkaToMysql</mainClass>
+                            <mainClass>com.fanyun.flink.destination.KafkaToMysql</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

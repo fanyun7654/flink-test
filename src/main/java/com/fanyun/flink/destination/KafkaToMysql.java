@@ -1,6 +1,8 @@
-package com.fanyun.flink.destination.sql;
+package com.fanyun.flink.destination;
 
 import com.fanyun.flink.KafkaToFlink;
+import com.fanyun.flink.destination.postgreSql.PostGreSQLSink;
+import com.fanyun.flink.destination.sql.MysqlSink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -41,6 +43,7 @@ public class KafkaToMysql {
             }
         }).map(new KafkaToFlink.JobMapFun());
 
+        sourceStreamTra.addSink(new PostGreSQLSink());
         sourceStreamTra.addSink(new MysqlSink());
         env.execute("data to mysql start");
     }
