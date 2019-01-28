@@ -70,6 +70,14 @@
             <version>42.2.5</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -121,7 +129,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.fanyun.flink.destination.KafkaToMysql</mainClass>
+                            <mainClass>com.fanyun.flink.destination.KafkaToFlinkToKafka</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

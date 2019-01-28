@@ -42,7 +42,8 @@ public class KafkaToFlink {
 
         //kafka配置信息
         Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+//        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.201.82.55:9092");
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
         //创建flink kafka消费者，不用版本功能介绍
